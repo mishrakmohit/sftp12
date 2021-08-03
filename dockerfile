@@ -1,11 +1,7 @@
-FROM debian:9.5
- 
-ARG SSH_MASTER_USER
-ARG SSH_MASTER_PASS
+FROM ubuntu:latest
  
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
-    nano \
     sudo \
     sshpass \
     openssh-server
@@ -25,15 +21,15 @@ RUN /usr/local/bin/sftp.sh
  
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
-RUN useradd myuser &&  usermod -aG sudo myuser
-RUN  echo 'myuser:myuser' | chpasswd
+RUN useradd nokapp &&  usermod -aG sudo nokapp
+RUN  echo 'nokapp:nokapp' | chpasswd
 
-RUN chown myuser:myuser /usr/local/bin/entrypoint.sh && \
+RUN chown nokapp:nokapp /usr/local/bin/entrypoint.sh && \
     chmod 744 /usr/local/bin/entrypoint.sh 
 #USER myuser
-
+USER nokapp
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 EXPOSE 22 
-USER myuser
+#USER nokapp
 CMD tail -f /dev/null
 
